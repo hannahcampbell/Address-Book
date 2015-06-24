@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Address Book</title>
+<link rel="stylesheet" type="text/css" href="index.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	//callback handler for form submit
+	$("#form").submit(function(e)
+	{
+		var postData = $(this).serializeArray();
+		var formURL = $(this).attr("action");
+		$.ajax(
+		{
+			url : formURL,
+			type: "POST",
+			data : postData,
+			success:function(data, textStatus, jqXHR) 
+			{
+				alert("It worked!");
+				//data: return data from server
+			},
+			error: function(jqXHR, textStatus, errorThrown) 
+			{
+				//if fails      
+			}
+		});
+		e.preventDefault(); //stop default action
+		e.unbind(); //unbind. to stop multiple form submit.
+	});
+	
+	fetch();
+});
+
+//populates form fields for update
+function update(contact){
+	$("#action_type").val("update");
+	$("#contact_ID").val(contact.P_ID);
+	$("#FirstName").val(contact.FirstName);
+	$("#LastName").val(contact.LastName);
+	$("#address_ID").val(contact.Address_ID);
+	$("#Street").val(contact.Street);
+	$("#City").val(contact.City);
+	$("#State").val(contact.State);
+	$("#Zip").val(contact.Zip);
+	
+}
+//populates address form
+function fetch(){
+	$.ajax({
+		url: "add_post.php",
+		data: {action_type: "fetch"},
+		type: "POST",
+		dataType: "json",
+		})
+	.success(function(data){
+		$("#resultsTable tr:not(:first-child)").remove();
+		$.each(data, function(){
+			addRow(this);
+		});
+	});
+}
+function addRow(row){
+	$tr = $("<tr></tr>");
+	$td1 = $("<td></td>").html(row.FirstName);
+	$td2 = $("<td></td>").html(row.LastName);
+	$td3 = $("<td></td>").html(row.Street);
+	$td4 = $("<td></td>").html(row.City);
+	$td5 = $("<td></td>").html(row.State);
+	$td6 = $("<td></td>").html(row.Zip);
+	
+	
+	$tdlast = $("<td></td>");
+	$button = $("<button>Edit</button>")
+	.click(function(){
+		update(row);
+	});
+	
+	$tdlast.append($button);
+	
+	
+	$tr.append($td1)
+		.append($td2)
+		.append($td3)
+		.append($td4)
+		.append($td5)
+		.append($td6)		
+		.append($tdlast);
+	
+	$("#resultsTable").append($tr);
+	$("#res")
+	
+}
+</script>
+</head>
+<body>
+
+	<div id="add">
+		<h4>Add to Address Book</h4>
+		<form id="form" action="add_post.php" method="post">
+			First Name: <input type="text" id="FirstName" name="FirstName"/><br/>
+			Last Name: <input type="text" id="LastName" name="LastName"/><br/>
+			Street: <input type="text" id="Street" name="Street"/><br/>
+			City: <input type="text" id="City" name="City"/><br/>
+			State: <input type="text" id="State" name="State"/><br/>
+			Zip: <input type="text" id="Zip" name="Zip"/><br/>
+			<input type="submit"/>
+			<input type="hidden" name="action_type" value="create" id="action_type"/>
+			<input type="hidden" name="contact_ID" id="contact_ID"/>
+			<input type="hidden" name="address_ID" id="address_ID"/>
+		</form>
+	</div>
+
+<div id="table">
+	<table id="resultsTable">
+		<tr>
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th>Street</th>
+			<th>City</th>
+			<th>State</th>
+			<th>Zip</th>
+			<th></th>		
+	</table>
+</div>
+</body>
+</html>

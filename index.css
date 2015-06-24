@@ -1,0 +1,26 @@
+body {
+	background-color: #C2FFEB;
+}
+
+#table {
+	margin-top: 20px;
+	margin-left: 200px;
+	padding: 10px;
+	float: left;
+	background-color: white;
+	}
+table td {
+	border: 1px solid black;
+	padding: 5px;
+}
+#add {
+	padding: 10px;
+	margin-top: 40px;
+	margin-right: 100px;
+	float: right;
+	background-color: #CCFF99;
+	border: 1px solid black;
+}
+button {
+	background-color:#99CCFF;
+}
